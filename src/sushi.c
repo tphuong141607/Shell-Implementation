@@ -2,20 +2,20 @@
 #include <stdio.h>
 #include "sushi.h"
 
-int main(int argc, char *argv[]) {
-    /*
+int main(/*int argc, char *argv[]*/) {
+    
     printf("%s", SUSHI_DEFAULT_PROMPT);
     
-    FILE *filePointer = fopen("sushi.conf", "r");
-    sushi_store(sushi_read_line(filePointer));
+    sushi_store(sushi_read_line(stdin));
     sushi_show_history();
-     */
     
-    //Testing for questions:
+    
+    /*//Testing for questions:
     char *name = "foo.txt";
     printf("\n");
     sushi_read_config(name);
     sushi_show_history();
+     */
     
            
     return EXIT_SUCCESS;

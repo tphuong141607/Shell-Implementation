@@ -4,13 +4,9 @@
 #include "sushi.h"
 
 static char *history[SUSHI_HISTORY_LENGTH] = {NULL};
+static int counter = 0;
 
 void sushi_store(char *line) {
-
-    /* If line is NULL, do nothing */
-    if (line == NULL) {
-        return;
-    }
 
     /* If the history is full (meaning the last element in history is not NULL),
      free the memory allocated for that last element*/
@@ -20,11 +16,12 @@ void sushi_store(char *line) {
     
     /* All existing lines are shifted to the next position */
     for (int i = SUSHI_HISTORY_LENGTH - 1; i >= 0; i--) {
-        *(history + i) = *(history + i-1);
+        history[i] = history[i-1];
     }
     
     /* The newly inserted line becomes the 1st element of the history */
-    *history = line;
+    history[0] = line;
+    
     printf("Line: %s\n", line);
     printf("History: %s\n", *history);
     

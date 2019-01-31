@@ -7,24 +7,14 @@
 
 char *sushi_read_line(FILE *in) {
     char ch;
-    char *lineBuffer; // Store the address of the 1st character of a line
+    char lineBuffer[SUSHI_MAX_INPUT];
     int bufferLen = 0; // Size of the "array of characters"
-    int countChar = 0; // used to check if total characters in the file > SUSHI_MAX_INPUT
+    int countChar = 0; // used to check if total characters in the file
     
-    if (in != NULL) {
-        /* Allocate memory for the buffer */
-        lineBuffer = (char *)malloc(SUSHI_MAX_INPUT * sizeof(*lineBuffer));
-
-        /* return NULL if fail to allocate memory */
-        if (lineBuffer == NULL) {
-            free(lineBuffer);
-            perror("Error: failed to allocate memory for line buffer.\n");
-            return NULL;
-        }
-
         /* Store input into the newly allocated buffer*/
         /* If the input is longer than the SUSHI_MAX_INPUT, discards the rest */
-        ch = fgetc(in);
+    
+        ch = fgetc(in); // use fgets(in)
         while (ch != '\n' && ch != EOF) {
             countChar++;
             if (bufferLen < SUSHI_MAX_INPUT) {
@@ -44,22 +34,14 @@ char *sushi_read_line(FILE *in) {
             }
         }
         if (countSpace == bufferLen && bufferLen != 0) {
-            free (lineBuffer);
             return NULL;
         }
         
         /* return NULL if the line is empty */
         if (bufferLen == 0 && lineBuffer[bufferLen] == '\0') {
-            free (lineBuffer);
             return NULL;
         }
-        
-        return lineBuffer;
-
-    } else {
-        perror ("Error: file pointer is null.\n");
-        return NULL;
-    }
+    return NULL; //lineBuffer; //memory
 }
 
 int sushi_read_config(char *fname) {
@@ -71,7 +53,7 @@ int sushi_read_config(char *fname) {
     } else {
         return 1;
     }
-    
+
     /* check if file can be opened */
     if (filePointer == NULL){
         perror("Error: could not open file\n");
@@ -80,7 +62,15 @@ int sushi_read_config(char *fname) {
     
     /* Read and store each line using sushi_read_line and sushi_store */
     while ((!feof(filePointer))) {
-        sushi_store(sushi_read_line(filePointer));
+        char *line = sushi_read_line(filePointer);
+        
+        /* If line is NULL, do nothing  CHECKING */
+        if (line == NULL) {
+            return 0;
+        }
+        
+        sushi_store(line); //split - check NULL
+        
     }
     /*
     printf("%s\n", sushi_read_line(filePointer));
