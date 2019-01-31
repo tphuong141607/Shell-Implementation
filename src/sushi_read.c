@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include "sushi.h"
-#include "sushi_history.c"
+
 
 char *sushi_read_line(FILE *in) {
     char ch;
@@ -82,21 +82,19 @@ int sushi_read_config(char *fname) {
     while ((!feof(filePointer))) {
         sushi_store(sushi_read_line(filePointer));
     }
-    
+    /*
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s\n", sushi_read_line(filePointer));
+    printf("%s", sushi_read_line(filePointer));
+    printf("%s", sushi_read_line(filePointer));
+    */
     fclose(filePointer);
     
   return 0;
-}
-
-
-///Tester
-int main() {
-    char *name = "foo.txt";
-    sushi_read_config(name);
-    sushi_show_history();
-    
-    
-    
 }
 
 

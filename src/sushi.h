@@ -14,3 +14,4 @@ void sushi_store(char *line);
 void sushi_show_history();
   
 #endif
+

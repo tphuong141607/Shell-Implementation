@@ -25,10 +25,13 @@ void sushi_store(char *line) {
     
     /* The newly inserted line becomes the 1st element of the history */
     *history = line;
-    printf("%s\n", line);
+    printf("Line: %s\n", line);
+    printf("History: %s\n", *history);
+    
 }
 
 void sushi_show_history() {
+    printf("\n");
     for (int i = 0; i < SUSHI_HISTORY_LENGTH; i++) {
         if (history[i] != NULL) {
             printf("%0.5d  %s\n", (i+1), history[i]);
