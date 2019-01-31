@@ -8,6 +8,8 @@ int main(/*int argc, char *argv[]*/) {
     
     printf("%s", SUSHI_DEFAULT_PROMPT);
     sushi_store(sushi_read_line(stdin));
+    printf("%s", SUSHI_DEFAULT_PROMPT);
+    sushi_store(sushi_read_line(stdin));
 
     sushi_show_history();
     
