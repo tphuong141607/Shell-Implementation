@@ -2,27 +2,28 @@
 #include <stdio.h>
 #include "sushi.h"
 
+static char *history[SUSHI_HISTORY_LENGTH] = {NULL};
 
 void sushi_store(char *line) {
+    int stackPointer = SUSHI_HISTORY_LENGTH-1;
     
-    history = (char *)malloc(sizeof(*history) * SUSHI_HISTORY_LENGTH);
-    
-    if (history == NULL) {
-        free(history);
-        perror("Error: failed to allocate memory for shell history.");
+    if (stackPointer == 0) {
+        free(history[SUSHI_HISTORY_LENGTH-1]);
     }
     
+    /* All existing lines are shifted to the next position */
     for (int i = SUSHI_HISTORY_LENGTH; i > 0; i--) {
         history[i] = history[i-1];
     }
-    history[0] = &line;
+        /* The newly inserted line becomes the 1st element of the history */
+        history[0] = line;
     
-    printf("The word: %s\n", *shellHistory[0]);
+    printf("Pos 0: %s\n", history[0]);
+    printf("Pos 1: %s\n", history[1]);
+    printf("Pos 2: %s\n", history[2]);
+    printf("Pos 2: %s\n", history[3]);
+    printf("Pos 2: %s\n", history[4]);
     
-    /*for (int i = 0; i < SUSHI_HISTORY_LENGTH; i++) {
-       printf("The word: %s\n", shellHistory[i]);
-    }
-     */
     
 }
 

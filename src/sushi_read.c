@@ -5,8 +5,6 @@
 #include "sushi.h"
 #include "sushi_history.c"
 
-static char *history[SUSHI_HISTORY_LENGTH] = {NULL};
-
 char *sushi_read_line(FILE *in) {
     char ch;
     char *lineBuffer; // Store the address of the 1st character of a line
@@ -47,14 +45,12 @@ char *sushi_read_line(FILE *in) {
         }
         if (countSpace == bufferLen && bufferLen != 0) {
             free (lineBuffer);
-            fprintf(stderr, "This line consists of only white spaces");
             return NULL;
         }
         
         /* return NULL if the line is empty */
         if (bufferLen == 0 && lineBuffer[bufferLen] == '\0') {
             free (lineBuffer);
-            fprintf(stderr, "Line is empty");
             return NULL;
         }
         return lineBuffer;
@@ -82,7 +78,7 @@ int sushi_read_config(char *fname) {
     }
     
     /* Read and store each line using sushi_read_line and sushi_store */
-    while ((fgetc(filePointer)) != EOF) {
+    while ((!feof(filePointer))) {
         sushi_store(sushi_read_line(filePointer));
     }
     
