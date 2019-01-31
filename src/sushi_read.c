@@ -18,7 +18,7 @@ char *sushi_read_line(FILE *in) {
         /* return NULL if fail to allocate memory */
         if (lineBuffer == NULL) {
             free(lineBuffer);
-            perror("Error: failed to allocate memory for line buffer.");
+            perror("Error: failed to allocate memory for line buffer.\n");
             return NULL;
         }
 
@@ -27,13 +27,13 @@ char *sushi_read_line(FILE *in) {
         ch = fgetc(in);
         while (ch != '\n' && ch != EOF) {
             countChar++;
-            if (bufferLen <= SUSHI_MAX_INPUT) {
+            if (bufferLen < SUSHI_MAX_INPUT) {
                 lineBuffer[bufferLen++] = ch;
             }
             ch = fgetc(in);
         }
         if (countChar > SUSHI_MAX_INPUT) {
-            fprintf(stderr, "Line too long, truncated: ");
+            fprintf(stderr, "Warning: Line too long, truncated\n");
         }
         
         /* return NULL if the line consists of only whitespace */
@@ -53,10 +53,11 @@ char *sushi_read_line(FILE *in) {
             free (lineBuffer);
             return NULL;
         }
+        
         return lineBuffer;
 
     } else {
-        perror ("Error: file pointer is null.");
+        perror ("Error: file pointer is null.\n");
         return NULL;
     }
 }
@@ -73,7 +74,7 @@ int sushi_read_config(char *fname) {
     
     /* check if file can be opened */
     if (filePointer == NULL){
-        perror("Error: could not open file");
+        perror("Error: could not open file\n");
         return 1;
     }
     
@@ -92,27 +93,13 @@ int sushi_read_config(char *fname) {
 int main() {
     char *name = "foo.txt";
     sushi_read_config(name);
+    sushi_show_history();
+    
+    
     
 }
 
-    /* size_t idx = 0;
-      FILE * file;
 
-      file = fopen( "foo.txt" , "r");
-     if (file) {
-        printf ("%s\n", sushi_read_line(file));
-        printf ("%s\n", sushi_read_line(file));
-         printf ("%s\n", sushi_read_line(file));
-         printf ("%s\n", sushi_read_line(file));
-         printf ("%s\n", sushi_read_line(file));
-         printf ("%s\n", sushi_read_line(file));
-        printf ("%s\n", sushi_read_line(file));
-        printf ("%s\n", sushi_read_line(file));
-        
-        fclose(file);
-    }
-     */
-    
 
 
 
