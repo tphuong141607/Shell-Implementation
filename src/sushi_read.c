@@ -4,85 +4,87 @@
 #include <string.h>
 #include <ctype.h>
 #include "sushi.h"
-
-
 char *sushi_read_line(FILE *in) {
     char lineBuffer[SUSHI_MAX_INPUT];
     int bufferLen = 0;
-    int countSpace;
-    char *lineAddress;
 
-    /* read a line to lineBuffer*/
+    /* Read a line to lineBuffer*/
     fgets(lineBuffer, SUSHI_MAX_INPUT, in);
-    bufferLen = strlen(lineBuffer); // include newline but not terminator
     
-    /* remove newline character */
+    /* This length includes newline but not terminator */
+    bufferLen = strlen(lineBuffer);
+    
+    /* Remove newline character */
     if(lineBuffer[bufferLen - 1] == '\n') {
-        lineBuffer[bufferLen - 1] = 0;
+        lineBuffer[bufferLen - 1] = '\0';
     }
-    bufferLen = strlen(lineBuffer); //not include either terminator nor newline
-    lineBuffer[bufferLen] = 0; // assignment terminator to the end of the string
+    /* Remove non-ASCII character */
+    int indx = 0;
+    while (indx < bufferLen) {
+        if(!isascii(lineBuffer[indx])) {
+            lineBuffer[0] = '\0';
+            break;
+        }
+        indx++;
+    }
     
-    /* return NULL if the line consists of only whitespace */
-    countSpace = 0;
+    /* This new length does not include newline nor terminator */
+    bufferLen = strlen(lineBuffer);
+    
+    /* Return NULL if the line is empty or consists of only whitespace*/
+    int noSpaceCount = 0;
     for(int i = 0; i < bufferLen; i++) {
-        if (isspace(lineBuffer[i])) {
-            countSpace++;
+        if (!isspace(lineBuffer[i])) {
+            noSpaceCount++;
         }
     }
-    if (countSpace == bufferLen && bufferLen != 0) {
-        return NULL;
-    }
-        
-    /* return NULL if the line is empty */
-    if (bufferLen == 0 && lineBuffer[bufferLen] == '\0') {
-        return NULL;
+    char *lineAddress = NULL;
+    if (!((noSpaceCount == 0) || (lineBuffer[0] == 0))) {
+        lineAddress = (char *)malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
+        if (lineAddress == NULL) {
+            perror("Error: ");
+            return NULL;
+        }
+        strcpy(lineAddress, lineBuffer);
     }
     
-    /* allocate memory to store the finalized line */
-    lineAddress = malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
-    strcpy(lineAddress, lineBuffer);
-    
-    /* discarding the rest of the line if line is too long...
+    /* Discarding the rest of the line if line is too long...
      While the file is still readable, call fgets() */
-    /* if the line is longer than the allowed size, print warning */
     if (bufferLen == SUSHI_MAX_INPUT - 1) {
         fprintf(stderr, "Warning: Line too long, truncated\n");
-        while (fgets(lineBuffer, SUSHI_MAX_INPUT, in) == NULL) {
-            printf("here");
-        }
+        while (fgets(lineBuffer, SUSHI_MAX_INPUT, in) == NULL) {}
     }
     
-    /* returning the address of the line */
+    /* Returning the address of the line */
     return lineAddress;
 }
 
 
-
+/* Read all lines from the file fname */
 int sushi_read_config(char *fname) {
     FILE *filePointer;
     
-    /* check if file exists */
+    /* Check if file exists */
     if(access( fname, F_OK ) != -1 ) {
         filePointer = fopen(fname, "r");
     } else {
         return 1;
     }
 
-    /* check if file can be opened */
+    /* Check if file can be opened */
     if (filePointer == NULL){
-        perror("Error: could not open file\n");
+        perror("Error: ");
         return 1;
     }
-    
     /* Read and store each line using sushi_read_line and sushi_store */
-    while ((!feof(filePointer))) {
+    do {
         char *line = sushi_read_line(filePointer);
-
         if (line != NULL) {
             sushi_store(line);
         }
-    }
+    } while ((!feof(filePointer)));
+  
+    /* Close the file */
     fclose(filePointer);
   return 0;
 }
