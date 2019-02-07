@@ -27,7 +27,8 @@ void sushi_store(char *line) {
 void sushi_show_history() {
     for (int i = 0; i < SUSHI_HISTORY_LENGTH; i++) {
         if (history[i] != NULL) {
-            printf("%0.5d  %s\n", (i+1), history[i]);
+	  // DZ: Must be "%05d"; illegal to ise "." for integers
+            printf("%05d  %s\n", (i+1), history[i]);
         }
         else {
             break;

@@ -9,6 +9,7 @@ char *sushi_read_line(FILE *in) {
     int bufferLen = 0;
 
     /* Read a line to lineBuffer*/
+    // DZ: Must check the returned value
     fgets(lineBuffer, SUSHI_MAX_INPUT, in);
     
     /* This length includes newline but not terminator */
@@ -18,6 +19,8 @@ char *sushi_read_line(FILE *in) {
     if(lineBuffer[bufferLen - 1] == '\n') {
         lineBuffer[bufferLen - 1] = '\0';
     }
+
+    // DZ: Why would you want to do this? This is wrong.
     /* Remove non-ASCII character */
     int indx = 0;
     while (indx < bufferLen) {
@@ -73,6 +76,7 @@ int sushi_read_config(char *fname) {
 
     /* Check if file can be opened */
     if (filePointer == NULL){
+      // DZ: perror(fname)
         perror("Error: ");
         return 1;
     }

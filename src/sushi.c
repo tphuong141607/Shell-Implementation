@@ -5,6 +5,7 @@
 
 int main() {
     if (sushi_read_config("sushi.conf") == 1) {
+      // DZ: Not at all. Just do the rest.
         return EXIT_FAILURE;
     }
     printf("%s", SUSHI_DEFAULT_PROMPT);
