@@ -8,11 +8,6 @@ char *sushi_unquote(char * s) {
 }
 
 // Do not modify this function
-int yywrap(void) {
-  return 1;
-}
-
-// Do not modify this function
 void yyerror(const char* s) {
   fprintf(stderr, "Parse error: %s\n", s);
 }
