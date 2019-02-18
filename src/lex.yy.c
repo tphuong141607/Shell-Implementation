@@ -332,6 +332,9 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
+#define yywrap(n) 1
+#define YY_SKIP_YYWRAP
+
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
@@ -490,8 +493,10 @@ char *yytext;
 #line 2 "sushi_yylexer.l"
 #include "sushi.h"
 #include "sushi_yyparser.tab.h"
-int yyparse();
-#line 495 "lex.yy.c"
+#ifdef __APPLE__
+extern int yylex(void);
+#endif
+#line 500 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -673,9 +678,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 15 "sushi_yylexer.l"
+#line 20 "sushi_yylexer.l"
 
-#line 679 "lex.yy.c"
+#line 684 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -761,114 +766,114 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 16 "sushi_yylexer.l"
+#line 21 "sushi_yylexer.l"
 { /* comment */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "sushi_yylexer.l"
+#line 23 "sushi_yylexer.l"
 { return YY_SUSHI_EXIT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "sushi_yylexer.l"
+#line 24 "sushi_yylexer.l"
 { return YY_SUSHI_JOBS; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "sushi_yylexer.l"
+#line 25 "sushi_yylexer.l"
 { return YY_SUSHI_PWD;  }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 "sushi_yylexer.l"
+#line 26 "sushi_yylexer.l"
 { return YY_SUSHI_CD;   }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 23 "sushi_yylexer.l"
+#line 28 "sushi_yylexer.l"
 { yylval.s = strdup(getenv(yytext + 1));
                   return YY_SUSHI_TOK; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 25 "sushi_yylexer.l"
+#line 30 "sushi_yylexer.l"
 { yylval.s = strdup(sushi_unquote(yytext + 1));
                   return YY_SUSHI_TOK; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 27 "sushi_yylexer.l"
+#line 32 "sushi_yylexer.l"
 { yytext[strlen(yytext) - 1] = 0;
                   yylval.s = strdup(yytext + 1);
                   return YY_SUSHI_TOK; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 30 "sushi_yylexer.l"
+#line 35 "sushi_yylexer.l"
 { yytext[strlen(yytext) - 1] = 0;
                   yylval.s = strdup(sushi_unquote(yytext + 1));
                   return YY_SUSHI_TOK; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "sushi_yylexer.l"
+#line 39 "sushi_yylexer.l"
 { return YY_SUSHI_LESS;     }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "sushi_yylexer.l"
+#line 40 "sushi_yylexer.l"
 { return YY_SUSHI_MORE;     }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 36 "sushi_yylexer.l"
+#line 41 "sushi_yylexer.l"
 { return YY_SUSHI_MOREMORE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 37 "sushi_yylexer.l"
+#line 42 "sushi_yylexer.l"
 { return YY_SUSHI_AMP;      }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 38 "sushi_yylexer.l"
+#line 43 "sushi_yylexer.l"
 { return YY_SUSHI_BAR;      }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 39 "sushi_yylexer.l"
+#line 44 "sushi_yylexer.l"
 { return YY_SUSHI_SET;      }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 40 "sushi_yylexer.l"
+#line 45 "sushi_yylexer.l"
 { return YY_SUSHI_HISTORY;  }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 42 "sushi_yylexer.l"
+#line 47 "sushi_yylexer.l"
 { fprintf(stderr, "Unsupported command: %c\n", yytext[0]);
                   return YY_SUSHI_UNKNOWN;}
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 44 "sushi_yylexer.l"
+#line 49 "sushi_yylexer.l"
 { /* whitespaces */ }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "sushi_yylexer.l"
+#line 51 "sushi_yylexer.l"
 { fprintf(stderr, "Illegal character: %c\n", yytext[0]);
                   return YY_SUSHI_UNKNOWN; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 49 "sushi_yylexer.l"
+#line 54 "sushi_yylexer.l"
 ECHO;
 	YY_BREAK
-#line 872 "lex.yy.c"
+#line 877 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1865,7 +1870,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 49 "sushi_yylexer.l"
+#line 54 "sushi_yylexer.l"
 
 
 
