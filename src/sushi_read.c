@@ -4,28 +4,22 @@
 #include <string.h>
 #include <ctype.h>
 #include "sushi.h"
+
 char *sushi_read_line(FILE *in) {
     char lineBuffer[SUSHI_MAX_INPUT];
     int bufferLen = 0;
-
-    /* Read a line to lineBuffer*/
-    fgets(lineBuffer, SUSHI_MAX_INPUT, in);
     
+    /* Read a line to lineBuffer*/
+    if (fgets(lineBuffer, SUSHI_MAX_INPUT, in) == NULL) {
+        return NULL;
+    };
+  
     /* This length includes newline but not terminator */
     bufferLen = strlen(lineBuffer);
     
     /* Remove newline character */
     if(lineBuffer[bufferLen - 1] == '\n') {
         lineBuffer[bufferLen - 1] = '\0';
-    }
-    /* Remove non-ASCII character */
-    int indx = 0;
-    while (indx < bufferLen) {
-        if(!isascii(lineBuffer[indx])) {
-            lineBuffer[0] = '\0';
-            break;
-        }
-        indx++;
     }
     
     /* This new length does not include newline nor terminator */
@@ -38,6 +32,7 @@ char *sushi_read_line(FILE *in) {
             noSpaceCount++;
         }
     }
+    
     char *lineAddress = NULL;
     if (!((noSpaceCount == 0) || (lineBuffer[0] == 0))) {
         lineAddress = (char *)malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
@@ -68,7 +63,7 @@ int sushi_read_config(char *fname) {
     if(access( fname, F_OK ) != -1 ) {
         filePointer = fopen(fname, "r");
     } else {
-        return 1;
+        return 0;
     }
 
     /* Check if file can be opened */
