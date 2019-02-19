@@ -62,8 +62,9 @@ int sushi_read_config(char *fname) {
     /* Check if file exists */
     if(access( fname, F_OK ) != -1 ) {
         filePointer = fopen(fname, "r");
+        
         /* Check if file can be opened */
-        if (filePointer == NULL){
+        if (filePointer == NULL) {
             perror(fname);
         } else {
             /* Read and store each line using sushi_read_line and sushi_store */
@@ -78,9 +79,10 @@ int sushi_read_config(char *fname) {
             
             /* Close the file */
             fclose(filePointer);
+            return 0;
         }
     }
-  return 0;
+  return 1;
 }
 
 
