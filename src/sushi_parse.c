@@ -41,7 +41,6 @@ char *sushi_unquote(char *s) {
         // If not whitespace characters, simply increment
         sINDX++;
     }
-    sINDX++;
     return s;
 }
 
