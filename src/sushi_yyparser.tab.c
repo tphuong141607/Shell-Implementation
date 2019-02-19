@@ -1375,12 +1375,12 @@ yyreduce:
 
   case 20:
 #line 68 "sushi_yyparser.y"
-    { /* Add your code here */ ;}
+    { sushi_show_history() ;}
     break;
 
   case 21:
 #line 69 "sushi_yyparser.y"
-    { /* Add your code here */ ;}
+    { sushi_exit = 1  ;}
     break;
 
   case 29:

@@ -62,25 +62,24 @@ int sushi_read_config(char *fname) {
     /* Check if file exists */
     if(access( fname, F_OK ) != -1 ) {
         filePointer = fopen(fname, "r");
-    } else {
-        return 0;
-    }
-
-    /* Check if file can be opened */
-    if (filePointer == NULL){
-        perror("Error: ");
-        return 1;
-    }
-    /* Read and store each line using sushi_read_line and sushi_store */
-    do {
-        char *line = sushi_read_line(filePointer);
-        if (line != NULL) {
-            sushi_store(line);
+        /* Check if file can be opened */
+        if (filePointer == NULL){
+            perror(fname);
+        } else {
+            /* Read and store each line using sushi_read_line and sushi_store */
+            do {
+                char *line = sushi_read_line(filePointer);
+                if (line != NULL) {
+                    if (sushi_parse_command(line) == 0) {
+                        sushi_store(line);
+                    }
+                }
+            } while ((!feof(filePointer)));
+            
+            /* Close the file */
+            fclose(filePointer);
         }
-    } while ((!feof(filePointer)));
-  
-    /* Close the file */
-    fclose(filePointer);
+    }
   return 0;
 }
 
