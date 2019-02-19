@@ -37,7 +37,7 @@ char *sushi_read_line(FILE *in) {
     if (!((noSpaceCount == 0) || (lineBuffer[0] == 0))) {
         lineAddress = (char *)malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
         if (lineAddress == NULL) {
-            perror();
+            perror("Error: ");
             return NULL;
         }
         strcpy(lineAddress, lineBuffer);
@@ -65,7 +65,7 @@ int sushi_read_config(char *fname) {
         
         /* Check if file can be opened */
         if (filePointer == NULL) {
-            perror();
+            perror(fname);
         } else {
             /* Read and store each line using sushi_read_line and sushi_store */
             do {
