@@ -12,7 +12,7 @@ int main() {
     char *fileName = "/sushi.conf";
     
     // read the commands from the file sushi.conf, located in the $HOME directory.
-    file = malloc(strlen(getenv("HOME") + strlen(fileName) + 1));
+    file = malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
     sushi_read_config(file);
     
