@@ -65,8 +65,8 @@ bgmode: /* Done */
 program: 
   args /* TODO */
 | arg YY_SUSHI_SET arg  /* TODO */
-| YY_SUSHI_HISTORY { sushi_show_history() }
-| YY_SUSHI_EXIT { sushi_exit = 1  }
+| YY_SUSHI_HISTORY { sushi_show_history() /* DZ: Missing semicolon */}
+| YY_SUSHI_EXIT { sushi_exit = 1 /* DZ: Missing semicolon */ }
 | YY_SUSHI_JOBS /* TODO */
 | YY_SUSHI_PWD  /* TODO */
 | YY_SUSHI_CD arg /* TODO */
