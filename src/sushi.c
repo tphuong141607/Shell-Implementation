@@ -6,6 +6,15 @@
 
 int sushi_exit = 0;
 
+static void refuse_to_die(int sig)
+{
+  // TODO
+}
+
+static void prevent_interruption() {
+  // TODO
+}
+
 int main() {
     
     char *file;
@@ -15,7 +24,7 @@ int main() {
     file = malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
     sushi_read_config(file);
-    
+    prevent_interruption();
     while (sushi_exit == 0) {
         // display the prompt SUSHI_DEFAULT_PROMPT
         printf("%s", SUSHI_DEFAULT_PROMPT);
