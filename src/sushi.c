@@ -6,13 +6,21 @@
 
 int sushi_exit = 0;
 
-void refuse_to_die(int sig){
-        printf("\n Type exit to exit the shell\n", );
-      fflush(stdout);
+static void refuse_to_die(int sig) {
+    switch (sig) {
+        case SIGINT:
+            printf("Type exit to exit the shell");
+            break;
+    }
 }
 
 static void prevent_interruption() {
-        signal (SIGIT, refuse_to_die);
+    struct sigaction sVal;
+    sVal.sa_handler = refuse_to_die;
+    sigemptyset(&sVal.sa_mask);
+    sigaddset(&sVal.sa_mask, SIGINT);
+    //sigaction(SIGINT, &sVal, NULL);
+    sVal.sa_flags = 0;
 }
 
 int main() {
@@ -23,12 +31,11 @@ int main() {
     // read the commands from the file sushi.conf, located in the $HOME directory.
     file = malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
-    //sushi_read_config(file);
+    sushi_read_config(file);
     prevent_interruption();
     while (sushi_exit == 0) {
         // display the prompt SUSHI_DEFAULT_PROMPT
         printf("%s", SUSHI_DEFAULT_PROMPT);
-        sleep(1);
 
         char *commandLine = sushi_read_line(stdin);
         if (commandLine != NULL){
