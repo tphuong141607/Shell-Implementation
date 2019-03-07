@@ -49,4 +49,5 @@ void __not_implemented__();
 // The likelyhood of the event is low, but the consequences are grave
 void *super_malloc(size_t size);
 void *super_realloc(void *ptr, size_t size);
+char *super_strdup (const char *s);
 #endif

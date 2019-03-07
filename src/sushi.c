@@ -6,17 +6,31 @@
 
 int sushi_exit = 0;
 
-static void refuse_to_die(int sig)
-{
-  // TODO
+static void refuse_to_die(int sig) {
+    switch (sig) {
+        case SIGINT:
+            printf("Type exit to exit the shell");
+            break;
+    }
 }
 
+/* Sets up a signal handler that intercepts SIGINT and
+ displays message “Type exit to exit the shell” on stderr. */
 static void prevent_interruption() {
-  // TODO
+    struct sigaction sVal;
+    sVal.sa_handler = refuse_to_die;
+    
+    /* Nash part (tutor helps him do this part)
+     Do we need this part? I don't feel like this is necessary */
+    sigemptyset(&sVal.sa_mask);
+    sigaddset(&sVal.sa_mask, SIGINT);
+    sVal.sa_flags = 0;
+    /**/
+    
+    sigaction(SIGINT, &sVal, NULL);
 }
 
 int main() {
-    
     char *file;
     char *fileName = "/sushi.conf";
     
@@ -25,6 +39,7 @@ int main() {
     strcat(strcpy(file, getenv("HOME")), fileName);
     sushi_read_config(file);
     prevent_interruption();
+    
     while (sushi_exit == 0) {
         // display the prompt SUSHI_DEFAULT_PROMPT
         printf("%s", SUSHI_DEFAULT_PROMPT);

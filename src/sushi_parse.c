@@ -54,17 +54,76 @@ void __not_implemented__() {
 
 // Function skeletons for HW3
 void free_memory(prog_t *exe, prog_t *pipe) {
+  // Temporary solve the unused parameter errors
+    exe;
+    pipe;
   // TODO - but not this time
 }
 
 int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
-  return 0; // TODO
+    // Temporary solve the unused parameter errors
+    bgmode;
+    
+    pid_t  pid;
+    int returnStatus;
+    
+    // Fork a child process
+    pid = fork();
+    
+    /* Add another element to the array of arguments with realloc() and
+     set that element to NULL.*/
+    
+    //realloc(exe, (exe->args.size + 1) * sizeof(prog_t));
+    exe = super_realloc(exe, (exe->args.size + 1));
+    exe->args.args[exe->args.size] = NULL;
+    
+    /* Start new program, as defined by exe->args.args[0]. If execvp()
+     fails, the function shall exit(0). Remember, only the child
+     terminates, the parent keeps running!*/
+    
+    if (pid == 0) { //child process
+        // execvp(const char *file, char *const argv[]);
+        if (execvp(exe->args.args[0], exe->args.args) < 0) {
+            exit(0);
+        }
+    } else { //parent process
+        free_memory(exe, pipe);
+        printf("free_memory is called");
+        
+        wait(&returnStatus); // Wait for the child process to exit.
+        if (returnStatus == -1) {// The child process execution failed.
+            perror("execv");
+            return 1;
+        }
+    }
+  return 0;
+}
+
+/*The wrapper functions shall call the corresponding library functions.
+ If the library function does not fail, the wrapper will return
+ the pointer to the newly allocated memory. */
+
+// Strdup() If an error occurs, a null pointer is returned and errno may be set.
+char *super_strdup (const char *s) {
+    char *newPointer = strdup(s);
+    if (newPointer == NULL) {
+        abort();
+    }
+    return newPointer;
 }
 
 void *super_malloc(size_t size) {
-  return NULL; // TODO
+    char *newPointer = malloc(size * sizeof(prog_t));
+    if (newPointer == NULL) {
+        abort();
+    }
+    return newPointer;
 }
 
 void *super_realloc(void *ptr, size_t size) {
-  return NULL; // TODO
+    char *newPointer = realloc(ptr, size * sizeof(prog_t));
+    if (newPointer == NULL) {
+        abort();
+    }
+    return newPointer;
 }
