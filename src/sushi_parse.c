@@ -23,15 +23,15 @@ char *sushi_unquote(char *s) {
                 case '?': s[sINDX] = '\?'; break;
             }
             /* If there is nothing after the whitespace characters,
-               simply assign NULL terminator to s[sINdx + 1]
-               Example: '\' and 'n' --> '\n' and '\0' */
+             simply assign NULL terminator to s[sINdx + 1]
+             Example: '\' and 'n' --> '\n' and '\0' */
             if (s[sINDX + 2] == '\0') {
                 s[sINDX + 1] = '\0';
                 
             } else {
                 /* If we still have some characters after the whitespace characters
-                   shift all characters starting from sINDX+1 until the end of the string
-                   Example: '\' and 'n' and 'a' --> '\n' and 'a' */
+                 shift all characters starting from sINDX+1 until the end of the string
+                 Example: '\' and 'n' and 'a' --> '\n' and 'a' */
                 for (int i = sINDX+1; i < len; i++) {
                     s[i] = s[i + 1];
                 }
@@ -45,19 +45,19 @@ char *sushi_unquote(char *s) {
 
 // Do not modify these functions
 void yyerror(const char* s) {
-  fprintf(stderr, "Parse error: %s\n", s);
+    fprintf(stderr, "Parse error: %s\n", s);
 }
 
-void __not_implemented__() {  
-  fputs("This operation is not implemented yet\n", stderr);
+void __not_implemented__() {
+    fputs("This operation is not implemented yet\n", stderr);
 }
 
 // Function skeletons for HW3
 void free_memory(prog_t *exe, prog_t *pipe) {
-  // Temporary solve the unused parameter errors
+    // Temporary solve the unused parameter errors
     exe;
     pipe;
-  // TODO - but not this time
+    // TODO - but not this time
 }
 
 int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
@@ -96,7 +96,7 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
             return 1;
         }
     }
-  return 0;
+    return 0;
 }
 
 /*The wrapper functions shall call the corresponding library functions.
@@ -127,3 +127,4 @@ void *super_realloc(void *ptr, size_t size) {
     }
     return newPointer;
 }
+
