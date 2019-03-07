@@ -6,6 +6,9 @@
 
 int sushi_exit = 0;
 
+/* Sets up a signal handler that intercepts SIGINT and
+ displays message “Type exit to exit the shell” on stderr. */
+
 static void refuse_to_die(int sig) {
     switch (sig) {
         case SIGINT:
@@ -14,28 +17,19 @@ static void refuse_to_die(int sig) {
     }
 }
 
-/* Sets up a signal handler that intercepts SIGINT and
- displays message “Type exit to exit the shell” on stderr. */
 static void prevent_interruption() {
     struct sigaction sVal;
     sVal.sa_handler = refuse_to_die;
-    
-    /* Nash part (tutor helps him do this part)
-     Do we need this part? I don't feel like this is necessary */
-    sigemptyset(&sVal.sa_mask);
-    sigaddset(&sVal.sa_mask, SIGINT);
-    sVal.sa_flags = 0;
-    /**/
-    
     sigaction(SIGINT, &sVal, NULL);
 }
 
+/* Main function */
 int main() {
     char *file;
     char *fileName = "/sushi.conf";
     
     // read the commands from the file sushi.conf, located in the $HOME directory.
-    file = malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
+    file = super_malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
     sushi_read_config(file);
     prevent_interruption();

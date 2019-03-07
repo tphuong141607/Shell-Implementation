@@ -13,7 +13,7 @@ char *sushi_read_line(FILE *in) {
     if (fgets(lineBuffer, SUSHI_MAX_INPUT, in) == NULL) {
         return NULL;
     };
-  
+    
     /* This length includes newline but not terminator */
     bufferLen = strlen(lineBuffer);
     
@@ -35,7 +35,7 @@ char *sushi_read_line(FILE *in) {
     
     char *lineAddress = NULL;
     if (!((noSpaceCount == 0) || (lineBuffer[0] == 0))) {
-        lineAddress = (char *)malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
+        lineAddress = super_malloc((bufferLen + 1) * sizeof(*lineBuffer));
         if (lineAddress == NULL) {
             perror("Error: ");
             return NULL;
@@ -82,9 +82,8 @@ int sushi_read_config(char *fname) {
             return 0;
         }
     }
-  return 1;
+    return 1;
 }
-
 
 
 
