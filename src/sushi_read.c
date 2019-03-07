@@ -35,7 +35,7 @@ char *sushi_read_line(FILE *in) {
     
     char *lineAddress = NULL;
     if (!((noSpaceCount == 0) || (lineBuffer[0] == 0))) {
-        lineAddress = (char *)malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
+        lineAddress = (char *)super_malloc((size_t)(bufferLen + 1) * sizeof(*lineBuffer));
         if (lineAddress == NULL) {
             perror("Error: ");
             return NULL;
