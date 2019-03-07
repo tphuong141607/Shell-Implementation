@@ -139,4 +139,3 @@ void *super_realloc(void *ptr, size_t size) {
     }
     return newPointerRealloc;
 }
-
