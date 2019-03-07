@@ -105,26 +105,20 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
 
 // Strdup() If an error occurs, a null pointer is returned and errno may be set.
 char *super_strdup (const char *s) {
-    char *newPointer = strdup(s);
-    if (newPointer == NULL) {
-        abort();
-    }
-    return newPointer;
+    char *tmp_strdup = strdup(s);
+    if (tmp_strdup==NULL) {abort(); }
+    else{return tmp_strdup;}
 }
 
 void *super_malloc(size_t size) {
-    char *newPointer = malloc(size * sizeof(prog_t));
-    if (newPointer == NULL) {
-        abort();
-    }
-    return newPointer;
+    char *tmp_malloc = malloc(size * sizeof(prog_t));
+    if (tmp_malloc == NULL) {abort();}
+    else{return temp_malloc;}
 }
 
 void *super_realloc(void *ptr, size_t size) {
-    char *newPointer = realloc(ptr, size * sizeof(prog_t));
-    if (newPointer == NULL) {
-        abort();
-    }
-    return newPointer;
+    char *tmp_realloc = realloc(ptr, size * sizeof(prog_t));
+    if (tmp_realloc == NULL) {abort(); }
+    else{return tmp_realloc;}
 }
 
