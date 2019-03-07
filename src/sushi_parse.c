@@ -70,8 +70,7 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
     pid = fork();
     
     switch (pid) {
-            
-            // In the child process
+        // In the child process
         case 0:
             /* Add another element to the array of arguments with realloc()
              and set that element to NULL.*/
@@ -86,20 +85,19 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
             }
             break;
             
-            // Fork() fail (2 cases: too many processes, memory run-out)
+        // Fork() fail (2 cases: too many processes, memory run-out)
         case -1:
             perror("Fork() failed");
             return 1;
             break;
             
-            // In the parent process
+        // In the parent process
         default:
             free_memory(exe, pipe);
             printf("free_memory is called\n");
             
             /* For the next homework assignment
-             //int returnStatus; (should be assigned outside of the scope)
-             
+             int returnStatus; (should be assigned outside of the scope)
              wait(&returnStatus); // Wait for the child process to exit.
              if (returnStatus == -1) {// The child process execution failed.
              perror("execv");
@@ -113,7 +111,6 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
 /*The wrapper functions shall call the corresponding library functions.
  If the library function does not fail, the wrapper will return
  the pointer to the newly allocated memory. */
-
 char *super_strdup (const char *s) {
     char *newPointerStrdup = strdup(s);
     if (newPointerStrdup == NULL) {

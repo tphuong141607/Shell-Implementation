@@ -8,7 +8,6 @@ int sushi_exit = 0;
 
 /* Sets up a signal handler that intercepts SIGINT and
  displays message “Type exit to exit the shell” on stderr. */
-
 static void refuse_to_die(int sig) {
     switch (sig) {
         case SIGINT:
