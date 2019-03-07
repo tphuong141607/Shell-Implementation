@@ -6,29 +6,30 @@
 
 int sushi_exit = 0;
 
-static void refuse_to_die(int sig)
-{
-  // TODO
+void refuse_to_die(int sig){
+        printf("\n Type exit to exit the shell\n", );
+      fflush(stdout);
 }
 
 static void prevent_interruption() {
-  // TODO
+        signal (SIGIT, refuse_to_die);
 }
 
 int main() {
-    
+
     char *file;
     char *fileName = "/sushi.conf";
-    
+
     // read the commands from the file sushi.conf, located in the $HOME directory.
     file = malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
-    sushi_read_config(file);
+    //sushi_read_config(file);
     prevent_interruption();
     while (sushi_exit == 0) {
         // display the prompt SUSHI_DEFAULT_PROMPT
         printf("%s", SUSHI_DEFAULT_PROMPT);
-        
+        sleep(1);
+
         char *commandLine = sushi_read_line(stdin);
         if (commandLine != NULL){
             // Call sushi_parse_command() if sushi_read_line() is successfully called
@@ -40,4 +41,3 @@ int main() {
     }
     return EXIT_SUCCESS;
 }
-
