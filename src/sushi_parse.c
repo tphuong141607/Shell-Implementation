@@ -70,6 +70,12 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
     pid = fork();
     
     switch (pid) {
+        // Fork() fail (2 cases: too many processes, memory run-out)
+        case -1:
+            perror("Fork() failed");
+            return 1;
+            break;
+            
         // In the child process
         case 0:
             /* Add another element to the array of arguments with realloc()
@@ -84,13 +90,7 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
                 return 1;
             }
             break;
-            
-        // Fork() fail (2 cases: too many processes, memory run-out)
-        case -1:
-            perror("Fork() failed");
-            return 1;
-            break;
-            
+        
         // In the parent process
         default:
             free_memory(exe, pipe);
