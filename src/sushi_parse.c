@@ -74,7 +74,7 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
         case -1:
             perror("Fork() failed");
             return 1;
-            break;
+            break; // DZ: Unreachable code
             
         // In the child process
         case 0:
@@ -87,13 +87,14 @@ int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
             if (execvp(exe->args.args[0], exe->args.args) < 0) {
                 perror(exe->args.args[0]);
                 exit(0);
-                return 1;
+                return 1; // DZ: Unreachable code
             }
             break;
         
         // In the parent process
         default:
             free_memory(exe, pipe);
+	    // DZ: Remove diagnostics before submitting
             printf("free_memory is called\n");
             
             /* For the next homework assignment
@@ -121,6 +122,7 @@ char *super_strdup (const char *s) {
 
 // provide * sizeof(datatype) when called
 void *super_malloc(size_t size) {
+  // DZ: Must be void*
     char *newPointerMalloc = malloc(size);
     if (newPointerMalloc == NULL) {
         abort();
@@ -130,6 +132,7 @@ void *super_malloc(size_t size) {
 
 // provide * sizeof(datatype) when called
 void *super_realloc(void *ptr, size_t size) {
+  // DZ: Must be void*
     char *newPointerRealloc = realloc(ptr, size);
     if (newPointerRealloc == NULL) {
         abort();

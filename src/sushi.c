@@ -15,6 +15,7 @@ static void refuse_to_die(int sig) {
 }
 
 static void prevent_interruption() {
+  // DZ: Only works for the first Ctrl+C
     struct sigaction sVal;
     sVal.sa_handler = refuse_to_die;
     sigaction(SIGINT, &sVal, NULL);

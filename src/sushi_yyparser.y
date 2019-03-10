@@ -86,6 +86,7 @@ bg_mode:
 
 exe: 
 args {
+  // DZ: why malloc?
   $$ = malloc(sizeof(prog_t));
   $$->args = $1;
   $$->redirection.in = $$->redirection.out1 = $$->redirection.out2 = NULL;
@@ -93,12 +94,14 @@ args {
 
 args:  
   arg      {
+    // DZ: why malloc?
     $$.args = malloc(sizeof(char*)); // New argument array
     $$.args[0] = $1; // Its first element
     $$.size = 1; }
 | args arg {
     $$ = $1;
     $$.size++; // Increase argument array size
+    // DZ: why realloc?
     $$.args = realloc($$.args, sizeof(char*) * $$.size); // Add storage
     $$.args[$$.size - 1] = $2; } // Add the last element
 
