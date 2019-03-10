@@ -61,7 +61,17 @@ void free_memory(prog_t *exe, prog_t *pipe) {
     
 }
 
-int spawn(prog_t *exe, prog_t *pipe, int bgmode) {
+// Skeleton
+void sushi_assign(char *name, char *value) {
+}
+
+// Skeleton
+char *sushi_safe_getenv(char *name) {
+  return NULL; // DZ: change it!
+}
+
+
+int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
     // Temporary solve the unused parameter errors
     bgmode;
     
