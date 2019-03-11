@@ -63,10 +63,13 @@ void free_memory(prog_t *exe, prog_t *pipe) {
 
 // Skeleton
 void sushi_assign(char *name, char *value) {
+    name;
+    value;
 }
 
 // Skeleton
 char *sushi_safe_getenv(char *name) {
+    name;
   return NULL; // DZ: change it!
 }
 
@@ -84,7 +87,6 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
         case -1:
             perror("Fork() failed");
             return 1;
-            break;
             
         // In the child process
         case 0:
@@ -97,14 +99,11 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
             if (execvp(exe->args.args[0], exe->args.args) < 0) {
                 perror(exe->args.args[0]);
                 exit(0);
-                return 1;
             }
-            break;
         
         // In the parent process
         default:
             free_memory(exe, pipe);
-            printf("free_memory is called\n");
             
             /* For the next homework assignment
              int returnStatus; (should be assigned outside of the scope)
@@ -135,7 +134,6 @@ void *super_malloc(size_t size) {
     if (newPointerMalloc == NULL) {
         abort();
     }
-    return newPointerMalloc;
 }
 
 // provide * sizeof(datatype) when called
@@ -144,5 +142,4 @@ void *super_realloc(void *ptr, size_t size) {
     if (newPointerRealloc == NULL) {
         abort();
     }
-    return newPointerRealloc;
 }
