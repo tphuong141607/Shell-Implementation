@@ -16,6 +16,7 @@ static void refuse_to_die(int sig) {
 
 static void prevent_interruption() {
     struct sigaction sVal;
+    memset(&sVal, 0, sizeof(sVal));
     sVal.sa_handler = refuse_to_die;
     sigaction(SIGINT, &sVal, NULL);
 }
