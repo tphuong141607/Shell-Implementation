@@ -130,16 +130,18 @@ char *super_strdup (const char *s) {
 
 // provide * sizeof(datatype) when called
 void *super_malloc(size_t size) {
-    char *newPointerMalloc = malloc(size);
+    void *newPointerMalloc = malloc(size);
     if (newPointerMalloc == NULL) {
         abort();
     }
+    return newPointerMalloc;
 }
 
 // provide * sizeof(datatype) when called
 void *super_realloc(void *ptr, size_t size) {
-    char *newPointerRealloc = realloc(ptr, size);
+    void *newPointerRealloc = realloc(ptr, size);
     if (newPointerRealloc == NULL) {
         abort();
     }
+    return newPointerRealloc;
 }
