@@ -25,7 +25,7 @@ static void prevent_interruption() {
 int main() {
     char *file;
     char *fileName = "/sushi.conf";
-    
+    // rename file -> config
     // read the commands from the file sushi.conf, located in the $HOME directory.
     file = super_malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(file, getenv("HOME")), fileName);
@@ -43,7 +43,10 @@ int main() {
                 // store the returnValue to history if no syntax error found.
                 sushi_store(commandLine);
             };
+            free(commandLine);
         }
+        
     }
+    free(file);
     return EXIT_SUCCESS;
 }

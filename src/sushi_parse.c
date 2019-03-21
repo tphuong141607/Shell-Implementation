@@ -2,6 +2,8 @@
 #include "sushi.h"
 #include "sushi_yyparser.tab.h"
 
+//Using python works, but I have to double type 1 character... Why?
+
 char *sushi_unquote(char *s) {
     int sINDX = 0;
     int len = strlen(s);
@@ -54,23 +56,59 @@ void __not_implemented__() {
 
 // Function skeletons for HW3
 void free_memory(prog_t *exe, prog_t *pipe) {
-    // TODO - but not this time
-    // Temporary solve the unused parameter error
-    exe;
+    // free each non-NULL argument in the array exe->args.args
+    for(int i = 0; i < exe->args.size; i++ ) {
+        if (exe->args.args[i] != NULL) {
+            free(exe->args.args[i]);
+        }
+    }
+    
+    // Free the array itself
+    free(exe->args.args);
+    
+    // Free each non-NULL exe->redirection
+    if (exe->redirection.in != NULL) {
+        free(exe->redirection.in);
+    }
+    if (exe->redirection.out1 != NULL) {
+        free(exe->redirection.out1);
+    }
+    if (exe->redirection.out2 != NULL) {
+        free(exe->redirection.out2);
+    }
+    
+    // Free exe itself
+    free(exe);
     pipe;
     
+    /* Abort if try to free(pipe);
+    if (pipe != NULL) {
+        free(pipe);
+    }
+    */
 }
 
 // Skeleton
 void sushi_assign(char *name, char *value) {
-    name;
-    value;
+    /* If name does exist in the environment, then its value
+     * is changed to value if overwrite is nonzero;
+     * The setenv() function returns zero on success,
+     * or -1 on error, with errno set to indicate the cause of the error.
+     */
+    int returnValue = setenv(name, value, 1);
+    free(value);
+    free(name);
 }
 
 // Skeleton
 char *sushi_safe_getenv(char *name) {
-    name;
-  return NULL; // DZ: change it!
+    /*The getenv() function returns a pointer to the
+     * value in the environment, or NULL if there is no match. */
+    char *returnPointer = getenv(name);
+    if (returnPointer == NULL) {
+        return "";
+    }
+    return returnPointer;
 }
 
 
@@ -79,7 +117,8 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
     bgmode;
     
     // Fork a child process
-    pid_t  pid;
+   
+    pid_t  pid, endID;
     pid = fork();
     
     switch (pid) {
@@ -90,29 +129,30 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
             
         // In the child process
         case 0:
-            /* Add another element to the array of arguments with realloc()
-             and set that element to NULL.*/
-            exe = super_realloc(exe, ((exe->args.size + 1) * sizeof(prog_t)));
+            exe->args.args = super_realloc(exe->args.args, ((exe->args.size + 1) * sizeof(prog_t)));
             exe->args.args[exe->args.size] = NULL;
             
-            // execvp(const char *file, char *const argv[]) Information
             if (execvp(exe->args.args[0], exe->args.args) < 0) {
                 perror(exe->args.args[0]);
                 exit(0);
             }
         
         // In the parent process
+        int statusPtr;
         default:
-            free_memory(exe, pipe);
-            
-            /* For the next homework assignment
-             int returnStatus; (should be assigned outside of the scope)
-             wait(&returnStatus); // Wait for the child process to exit.
-             if (returnStatus == -1) {// The child process execution failed.
-             perror("execv");
-             return 1;
-             }
-             */
+            if (bgmode == 1) {
+                free_memory(exe, pipe);
+                
+            } else if(bgmode == 0) {
+                free_memory(exe, pipe);
+                endID = waitpid(pid, &statusPtr, 0);
+                
+                if (endID != -1) { // waitpid works
+                    char status[4];
+                    sprintf(status, "%d", statusPtr);
+                    setenv("_", status, 1);
+                }
+            }
     }
     return 0;
 }

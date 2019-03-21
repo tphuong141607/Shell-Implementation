@@ -34,3 +34,8 @@ lex.yy.c: sushi_yylexer.l
 clean:
 	rm -f $(OBJS) $(TARGET) lex.yy.c\
 		sushi_yyparser.tab.c sushi_yyparser.tab.h
+
+
+vg: all 
+	clear
+	valgrind --leak-check=full ./sushi
