@@ -100,6 +100,7 @@ void sushi_assign(char *name, char *value) {
      * or -1 on error, with errno set to indicate the cause of the error.
      */
     int returnValue = setenv(name, value, 1);
+    // DZ: perror() if error
     free(value);
     free(name);
 }
@@ -135,11 +136,12 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
                 perror(exe->args.args[0]);
                 exit(0);
             }
-	    break; // DZ: You forgor the break
+	    break; // DZ: You forgot the break
         
         // In the parent process
         int statusPtr;
         default:
+	  // DZ: move free_memory(exe, pipe); here
             if (bgmode == 1) {
                 free_memory(exe, pipe);
                 
@@ -152,6 +154,7 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
                     sprintf(status, "%d", statusPtr); // sprintf: write formatted data to string
                     setenv("_", status, 1);
                 }
+		// DZ: else perror()
             }
     }
     return 0;
