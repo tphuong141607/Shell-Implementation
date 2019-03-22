@@ -1,4 +1,6 @@
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "sushi.h"
 #include "sushi_yyparser.tab.h"
 
@@ -133,6 +135,7 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
                 perror(exe->args.args[0]);
                 exit(0);
             }
+	    break; // DZ: You forgor the break
         
         // In the parent process
         int statusPtr;
