@@ -5,9 +5,10 @@
 
 static char *history[SUSHI_HISTORY_LENGTH] = {NULL};
 
-// The items are currently in the history are not free. But does not cause memory leak
+// The items currently located in the history are not free.
+// However, they don't cause memory leak because the size is not accumulated (fixed size)
+
 void sushi_store(char *line) {
-    
     if (line != NULL) {
         /* If the history is full (meaning the last element in history is not NULL),
          free the memory allocated for that last element*/

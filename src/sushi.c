@@ -23,13 +23,13 @@ static void prevent_interruption() {
 
 /* Main function */
 int main() {
-    char *file;
+    char *config;
     char *fileName = "/sushi.conf";
-    // rename file -> config
+    
     // read the commands from the file sushi.conf, located in the $HOME directory.
-    file = super_malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
-    strcat(strcpy(file, getenv("HOME")), fileName);
-    sushi_read_config(file);
+    config = super_malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
+    strcat(strcpy(config, getenv("HOME")), fileName);
+    sushi_read_config(config);
     prevent_interruption();
     
     while (sushi_exit == 0) {
@@ -47,6 +47,6 @@ int main() {
         }
         
     }
-    free(file);
+    free(config);
     return EXIT_SUCCESS;
 }

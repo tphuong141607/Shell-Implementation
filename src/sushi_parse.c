@@ -56,6 +56,7 @@ void __not_implemented__() {
 
 // Function skeletons for HW3
 void free_memory(prog_t *exe, prog_t *pipe) {
+    
     // free each non-NULL argument in the array exe->args.args
     for(int i = 0; i < exe->args.size; i++ ) {
         if (exe->args.args[i] != NULL) {
@@ -79,8 +80,9 @@ void free_memory(prog_t *exe, prog_t *pipe) {
     
     // Free exe itself
     free(exe);
-    pipe;
     
+    // For next assignment
+    pipe;
     /* Abort if try to free(pipe);
     if (pipe != NULL) {
         free(pipe);
@@ -111,13 +113,8 @@ char *sushi_safe_getenv(char *name) {
     return returnPointer;
 }
 
-
 int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
-    // Temporary solve the unused parameter errors
-    bgmode;
-    
     // Fork a child process
-   
     pid_t  pid, endID;
     pid = fork();
     
@@ -149,7 +146,7 @@ int sushi_spawn(prog_t *exe, prog_t *pipe, int bgmode) {
                 
                 if (endID != -1) { // waitpid works
                     char status[4];
-                    sprintf(status, "%d", statusPtr);
+                    sprintf(status, "%d", statusPtr); // sprintf: write formatted data to string
                     setenv("_", status, 1);
                 }
             }
