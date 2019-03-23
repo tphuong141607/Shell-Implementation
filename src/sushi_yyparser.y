@@ -2,6 +2,12 @@
 #include "sushi.h"
   int yylex();
   void yyerror(const char* s);
+
+  // Find the first program on the command line
+  static prog_t *last_exe(prog_t *exe) {
+    while(exe->prev) exe = exe->prev;
+  return exe;
+}
 %}
 
 %union {
@@ -38,8 +44,8 @@
 
 cmdline: 
                        { /* an empty line is valid, too! Do nothing */ }
-| redir_exe bg_mode    { sushi_spawn($1, NULL, $2); }
-| in_exe pipe bg_mode  { sushi_spawn($1, $2, $3); }
+| redir_exe bg_mode    { sushi_spawn($1, $2); }
+| in_exe pipe bg_mode  { last_exe($2)->prev = $1; sushi_spawn($2, $3);}
 | arg YY_SUSHI_SET arg { sushi_assign($1, $3); }
 | YY_SUSHI_JOBS        { __not_implemented__(); } /* TODO */
 | YY_SUSHI_PWD         { __not_implemented__(); } /* TODO */
@@ -48,8 +54,8 @@ cmdline:
 | YY_SUSHI_EXIT        { sushi_exit = 1; }
 
 pipe: 
-  YY_SUSHI_BAR out_exe  { __not_implemented__(); } /* TODO */
-| YY_SUSHI_BAR exe pipe { __not_implemented__(); } /* TODO */
+  YY_SUSHI_BAR out_exe  { $$ = $2;}
+| pipe YY_SUSHI_BAR out_exe { $$ = $3; $$->prev = $1;}
 
 redir_exe: 
   exe           { $$ = $1; } 
@@ -85,11 +91,11 @@ bg_mode:
 | YY_SUSHI_AMP { $$ = 1; }
 
 exe: 
-args {
-  $$ = super_malloc(sizeof(prog_t));
-  $$->args = $1;
-  $$->redirection.in = $$->redirection.out1 = $$->redirection.out2 = NULL;
-  $$->next = NULL; }
+  args {
+    $$ = super_malloc(sizeof(prog_t));
+    $$->args = $1;
+    $$->redirection.in = $$->redirection.out1 = $$->redirection.out2 = NULL;
+    $$->prev = NULL; }
 
 args:  
   arg      {

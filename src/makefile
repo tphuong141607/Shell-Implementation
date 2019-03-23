@@ -6,12 +6,12 @@ CFLAGS = -Wall -pedantic -Wextra -Wcast-align -Wcast-qual \
 	-Wdisabled-optimization -Wformat=2 -Winit-self \
 	-Wmissing-include-dirs -Wredundant-decls -Wshadow \
 	-Wstrict-overflow=5 -Wundef -Werror -Wno-unused \
-	-g #-O3 -Wlogical-op -Wsign-conversion -Wswitch-default 
+	-g -Wno-unused-result -O3 -Wlogical-op -Wno-strict-overflow # -Wsign-conversion -Wswitch-default 
 
 all: $(TARGET)
 
 sushi: $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET)
+	$(CC) $(OBJS) -o $(TARGET) #-lefence
 
 sushi.o: sushi.c sushi.h
 
@@ -19,7 +19,7 @@ sushi_read.o: sushi_read.c sushi.h
 
 sushi_history.o: sushi_history.c sushi.h
 
-sushi_parse.o: sushi_yyparser.tab.h
+sushi_parse.o: sushi_yyparser.tab.h sushi.h
 
 sushi_yyparser.tab.c sushi_yyparser.tab.h: sushi_yyparser.y
 	bison -d sushi_yyparser.y
@@ -35,7 +35,6 @@ clean:
 	rm -f $(OBJS) $(TARGET) lex.yy.c\
 		sushi_yyparser.tab.c sushi_yyparser.tab.h
 
-
-vg: all 
+vg: all
 	clear
 	valgrind --leak-check=full ./sushi
