@@ -4,8 +4,6 @@
 #include "sushi.h"
 #include "sushi_yyparser.tab.h"
 
-//Using python works, but I have to double type 1 character... Why?
-
 char *sushi_unquote(char *s) {
     int sINDX = 0;
     int len = strlen(s);
@@ -92,7 +90,9 @@ void sushi_assign(char *name, char *value) {
      * The setenv() function returns zero on success,
      * or -1 on error, with errno set to indicate the cause of the error.
      */
-    int returnValue = setenv(name, value, 1);
+    if(setenv(name, value, 1) != 0) {
+        perror("setenv");
+    }
     free(value);
     free(name);
 }
@@ -186,23 +186,23 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                 perror(exe->args.args[0]);
                 exit(0);
             }
-	    break; // DZ: You forgot the break
+	    break;
         
         // In the parent process
         int statusPtr;
         default:
-            if (bgmode == 1) {
-                free_memory(exe);
-                
-            } else if(bgmode == 0) {
-                free_memory(exe);
+            free_memory(exe);
+            if(bgmode == 0) {
                 endID = waitpid(pid, &statusPtr, 0);
                 
                 if (endID != -1) { // waitpid works
                     char status[4];
                     sprintf(status, "%d", statusPtr); // sprintf: write formatted data to string
                     setenv("_", status, 1);
+                } else {
+                    perror("endID");
                 }
+                
             }
     }
     return 0;
@@ -236,3 +236,6 @@ void *super_realloc(void *ptr, size_t size) {
     }
     return newPointerRealloc;
 }
+
+
+

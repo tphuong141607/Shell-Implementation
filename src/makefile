@@ -6,7 +6,7 @@ CFLAGS = -Wall -pedantic -Wextra -Wcast-align -Wcast-qual \
 	-Wdisabled-optimization -Wformat=2 -Winit-self \
 	-Wmissing-include-dirs -Wredundant-decls -Wshadow \
 	-Wstrict-overflow=5 -Wundef -Werror -Wno-unused \
-	-g -Wno-unused-result -O3 -Wlogical-op -Wno-strict-overflow # -Wsign-conversion -Wswitch-default 
+	-g -Wno-unused-result -O3 -Wno-strict-overflow # -Wsign-conversion -Wswitch- default -Wlogical-op 
 
 all: $(TARGET)
 
@@ -38,3 +38,4 @@ clean:
 vg: all
 	clear
 	valgrind --leak-check=full ./sushi
+
