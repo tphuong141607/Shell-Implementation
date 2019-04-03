@@ -152,7 +152,7 @@ static void start(prog_t *exe) {
 // "Rename" fule descriptor "old" to "new," if necessary. After the
 // execution of this function a program that "believes" that it uses
 // the "old" descriptor (e.g., stdout #1 for output) will be actually
-// using the "new" descriprot (e.g., an outgoinf pipe).  This
+// using the "new" descriprot (e.g., an outgoing pipe).  This
 // functions terminates the process of error and should not be used in
 // the parent, only in a child.
 static void dup_me (int new, int old) {
@@ -178,6 +178,14 @@ int sushi_spawn(prog_t *exe, int bgmode) {
             return 1;
             
         // In the child process
+        /* execvp() Definition and How to Use it
+         • execvp(): The first argument is the file you wish to execute, and the second argument is an
+         array of null-terminated strings that represent the appropriate arguments.
+         • Example:
+                char *cmd = "ls";
+                char *argv[3]; argv[0] = "ls"; argv[1] = "-la"; argv[2] = NULL;
+                execvp(cmd, argv); //This will run "ls -la" as if it were a command
+        */
         case 0:
             exe->args.args = super_realloc(exe->args.args, ((exe->args.size + 1) * sizeof(prog_t)));
             exe->args.args[exe->args.size] = NULL;
@@ -189,6 +197,15 @@ int sushi_spawn(prog_t *exe, int bgmode) {
 	    break;
         
         // In the parent process
+        /* bgmode definition:
+         If bgmode is 1, the function shall only free_memory(exe).
+         If bgmode is 0, the parent shall:
+            1. Free the memory
+            2. Wait for the child to terminate with waitpid()
+            3. Collect the value returned by the child and assign it to the
+            environmental variable _ (underscore). Remember that setenv()
+            expects the value to be a string.
+         */
         int statusPtr;
         default:
             free_memory(exe);
