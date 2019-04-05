@@ -22,7 +22,12 @@ static void prevent_interruption() {
 }
 
 /* Main function */
-int main() {
+int main(int argc, char *argv[]) {
+    argc;
+    argv;
+    
+    setenv("SHELL", argv[0], 1);
+    
     char *config;
     char *fileName = "/sushi.conf";
     

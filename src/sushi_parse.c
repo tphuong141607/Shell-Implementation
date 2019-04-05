@@ -147,6 +147,7 @@ static void start(prog_t *exe) {
   args.args[args.size] = (char*)NULL;
   execvp(args.args[0], args.args);
   perror(args.args[0]);
+    exit(0);
 }
 
 // "Rename" fule descriptor "old" to "new," if necessary. After the
@@ -161,69 +162,128 @@ static void dup_me (int new, int old) {
     exit(1);
   }
 }
+// Calculate the total size of the linkedList (total processes)
+int linkedListSize(prog_t *head) {
+    int count = 0;
+    prog_t *currentNode = head;
+    while (currentNode != NULL) {
+        count++;
+        currentNode = currentNode->prev;
+    }
+    return count;
+}
 
+// Calculate the sum of all values in an array
+int calculateSum(int arr[], int n) {
+    int total = 0;
+    for (int i = 0; i < n; i++)
+        total += arr[i];
+    return total;
+}
 /*--------------------------------------------------------------------
  * End of "convenience" functions
  *--------------------------------------------------------------------*/
 
 int sushi_spawn(prog_t *exe, int bgmode) {
-    // Fork a child process
-    pid_t  pid, endID;
-    pid = fork();
+    int totalProcess = linkedListSize(exe);
+    int allProcessID[totalProcess];
+    memset(allProcessID, 0, totalProcess*sizeof(int)); // initialize all elements in array to 0
     
-    switch (pid) {
-        // Fork() fail (2 cases: too many processes, memory run-out)
-        case -1:
-            perror("Fork() failed");
-            return 1;
-            
-        // In the child process
-        /* execvp() Definition and How to Use it
-         • execvp(): The first argument is the file you wish to execute, and the second argument is an
-         array of null-terminated strings that represent the appropriate arguments.
-         • Example:
-                char *cmd = "ls";
-                char *argv[3]; argv[0] = "ls"; argv[1] = "-la"; argv[2] = NULL;
-                execvp(cmd, argv); //This will run "ls -la" as if it were a command
-        */
-        case 0:
-            exe->args.args = super_realloc(exe->args.args, ((exe->args.size + 1) * sizeof(prog_t)));
-            exe->args.args[exe->args.size] = NULL;
-            
-            if (execvp(exe->args.args[0], exe->args.args) < 0) {
-                perror(exe->args.args[0]);
-                exit(0);
-            }
-	    break;
-        
-        // In the parent process
-        /* bgmode definition:
-         If bgmode is 1, the function shall only free_memory(exe).
-         If bgmode is 0, the parent shall:
-            1. Free the memory
-            2. Wait for the child to terminate with waitpid()
-            3. Collect the value returned by the child and assign it to the
-            environmental variable _ (underscore). Remember that setenv()
-            expects the value to be a string.
-         */
-        int statusPtr;
-        default:
-            free_memory(exe);
-            if(bgmode == 0) {
-                endID = waitpid(pid, &statusPtr, 0);
-                
-                if (endID != -1) { // waitpid works
-                    char status[4];
-                    sprintf(status, "%d", statusPtr); // sprintf: write formatted data to string
-                    setenv("_", status, 1);
-                } else {
-                    perror("endID");
-                }
-                
-            }
+    // Case 1: Only 1 Process - no pipes needed
+    if (totalProcess == 1) {
+        allProcessID[0] = fork();
+        switch (allProcessID[0]) {
+            case -1:
+                perror("Fork() failed");
+                return 1;
+            case 0:
+                start(exe);
+                break;
+            default:
+                free_memory(exe);
+                break;
+        }
     }
+    
+    // Case 2: Multiple processes - pipes needed
+    if (totalProcess > 1) {
+        int pipe_fd[totalProcess][2]; // # of pipes = # of processes
+        prog_t *currentNode = exe;
+        int temp;
+        
+        for (int i = 0; i < totalProcess; i++) {
+            pipe(pipe_fd[i]);
+            allProcessID[i] = fork();
+            
+            switch (allProcessID[i]) {
+                case -1: // Fork error
+                    perror("Fork() failed");
+                    return 1;
+                    
+                case 0: // in child process
+                    // head process
+                    if (currentNode->prev == NULL) {
+                        printf("In the head process \n");
+                        dup_me(temp, STDOUT_FILENO);
+                        close(pipe_fd[i][0]);
+                        close(pipe_fd[i][1]);
+                        start(currentNode);
+                        break;
+                    }
+                    // Tail process
+                    else if ((currentNode->prev != NULL) && (calculateSum(allProcessID, totalProcess)) == 0) {
+                        printf("In the tail process \n");
+                        close(pipe_fd[i][1]);
+                        dup_me(pipe_fd[i][0], STDIN_FILENO); //send stdin to read end of pipe
+                        start(currentNode);
+                        break;
+                    }
+                    // middles process
+                    else if (currentNode->prev != NULL) {
+                        printf("In the middle process \n");
+                        dup_me(temp, STDOUT_FILENO);
+                        dup_me(pipe_fd[i][0], STDIN_FILENO);
+                        close(pipe_fd[i][1]);
+                        start(currentNode);
+                        break;
+                    }
+                    
+                default: // in parent process
+                    // head process
+                    if (currentNode->prev == NULL) {
+                        close(temp);
+                        close(pipe_fd[i][0]);
+                        close(pipe_fd[i][1]);
+                        break;
+                    }
+                    // Tail process
+                    else if ((currentNode->prev != NULL) && (calculateSum(allProcessID, totalProcess)) == 0) {
+                        temp = pipe_fd[i][1];
+                        close(pipe_fd[i][0]);
+                        break;
+                    }
+                    // middles process
+                    else if (currentNode->prev != NULL) {
+                        close(temp);
+                        temp = pipe_fd[i][1];
+                        close(pipe_fd[i][0]);
+                        break;
+                    }
+                    free_memory(currentNode);
+            }
+            currentNode = currentNode->prev;
+        }
+    }
+    // In parent
+    if(bgmode == 0) {
+        for (int i = 0; i < totalProcess; i++){
+            wait_and_setenv(allProcessID[i]);
+        }
+    }
+    
     return 0;
 }
+
 
 /*The wrapper functions shall call the corresponding library functions.
  If the library function does not fail, the wrapper will return
