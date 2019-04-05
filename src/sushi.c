@@ -24,22 +24,32 @@ static void prevent_interruption() {
 /* Main function */
 int main(int argc, char *argv[]) {
     argc;
-    argv;
     
-    setenv("SHELL", argv[0], 1);
-    
+    if (-1 == setenv("SHELL", argv[0], 1)) {
+        perror("setenv SHELL");
+    }
+
     char *config;
     char *fileName = "/sushi.conf";
     
     // read the commands from the file sushi.conf, located in the $HOME directory.
     config = super_malloc(strlen(getenv("HOME")) + strlen(fileName) + 1);
     strcat(strcpy(config, getenv("HOME")), fileName);
-    sushi_read_config(config);
+    sushi_read_config(config, 1);
     prevent_interruption();
     
+    // What is this ????
+    // for(int i = 0; i < argc; i++) {
+    //    sushi_read_config(argv[i], 1);
+    //}
+    
     while (sushi_exit == 0) {
-        // display the prompt SUSHI_DEFAULT_PROMPT
-        printf("%s", SUSHI_DEFAULT_PROMPT);
+        char *currentPS1Value = sushi_safe_getenv("PS1");
+        if (strncmp(currentPS1Value, "", 1) != 0) {
+            printf("%s", currentPS1Value);
+        } else {
+            printf("%s", SUSHI_DEFAULT_PROMPT);
+        }
         
         char *commandLine = sushi_read_line(stdin);
         if (commandLine != NULL){

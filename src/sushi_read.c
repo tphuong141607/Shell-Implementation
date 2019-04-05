@@ -52,30 +52,39 @@ char *sushi_read_line(FILE *in) {
 
 
 /* Read all lines from the file fname */
-int sushi_read_config(char *fname) {
+int sushi_read_config(char *fname, int ok_if_missing) {
     FILE *filePointer;
     
-    /* Check if file exists */
-    if(access( fname, F_OK ) != -1 ) {
-        filePointer = fopen(fname, "r");
+    if (ok_if_missing == 0){ //PART V
+        exit(1);
         
-        /* Check if file can be opened */
-        if (filePointer == NULL) {
-            perror(fname);
-        } else {
-            /* Read and store each line using sushi_read_line and sushi_store */
-            do {
-                char *line = sushi_read_line(filePointer);
-                if (line != NULL) {
-                    if (sushi_parse_command(line) == 0) {
-                        sushi_store(line);
-                    }
-                }
-            } while ((!feof(filePointer)));
+    } else {
+        /* Check if file exists */
+        if(access(fname, F_OK) != -1 ) {
+            filePointer = fopen(fname, "r");
             
-            /* Close the file */
-            fclose(filePointer);
-            return 0;
+            /* Check if file can be opened */
+            if (filePointer == NULL) {
+                perror(fname);
+            } else {
+                /* Read and store each line using sushi_read_line and sushi_store */
+                do {
+                    char *line = sushi_read_line(filePointer);
+                    if (line != NULL) {
+                        if (sushi_parse_command(line) == 0) {
+                            sushi_store(line);
+                        }
+                    } else {
+                        perror(fname);
+                    }
+                } while ((!feof(filePointer)));
+                
+                /* Close the file */
+                fclose(filePointer);
+                return 0;
+            }
+        } else {
+            perror(fname);
         }
     }
     return 1;

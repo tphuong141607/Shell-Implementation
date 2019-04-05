@@ -56,6 +56,9 @@ void __not_implemented__() {
 
 // Function skeletons for HW3
 void free_memory(prog_t *exe) {
+    if (exe == NULL) {
+        return;
+    }
     
     // free each non-NULL argument in the array exe->args.args
     for(int i = 0; i < exe->args.size; i++ ) {
@@ -63,10 +66,9 @@ void free_memory(prog_t *exe) {
             free(exe->args.args[i]);
         }
     }
-    
     // Free the array itself
     free(exe->args.args);
-    
+        
     // Free each non-NULL exe->redirection
     if (exe->redirection.in != NULL) {
         free(exe->redirection.in);
@@ -77,10 +79,10 @@ void free_memory(prog_t *exe) {
     if (exe->redirection.out2 != NULL) {
         free(exe->redirection.out2);
     }
-    
     // Free exe itself
     free(exe);
     
+    free_memory(exe->prev);
 }
 
 // Skeleton
@@ -200,7 +202,6 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                 start(exe);
                 break;
             default:
-                free_memory(exe);
                 break;
         }
     }
@@ -223,7 +224,6 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                 case 0: // in child process
                     // head process
                     if (currentNode->prev == NULL) {
-                        printf("In the head process \n");
                         dup_me(temp, STDOUT_FILENO);
                         close(pipe_fd[i][0]);
                         close(pipe_fd[i][1]);
@@ -232,7 +232,6 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                     }
                     // Tail process
                     else if ((currentNode->prev != NULL) && (calculateSum(allProcessID, totalProcess)) == 0) {
-                        printf("In the tail process \n");
                         close(pipe_fd[i][1]);
                         dup_me(pipe_fd[i][0], STDIN_FILENO); //send stdin to read end of pipe
                         start(currentNode);
@@ -240,7 +239,6 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                     }
                     // middles process
                     else if (currentNode->prev != NULL) {
-                        printf("In the middle process \n");
                         dup_me(temp, STDOUT_FILENO);
                         dup_me(pipe_fd[i][0], STDIN_FILENO);
                         close(pipe_fd[i][1]);
@@ -269,18 +267,17 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                         close(pipe_fd[i][0]);
                         break;
                     }
-                    free_memory(currentNode);
             }
             currentNode = currentNode->prev;
         }
     }
     // In parent
+    free_memory(exe);
     if(bgmode == 0) {
         for (int i = 0; i < totalProcess; i++){
             wait_and_setenv(allProcessID[i]);
         }
     }
-    
     return 0;
 }
 
