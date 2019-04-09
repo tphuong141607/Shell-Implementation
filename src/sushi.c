@@ -23,8 +23,6 @@ static void prevent_interruption() {
 
 /* Main function */
 int main(int argc, char *argv[]) {
-    argc;
-    
     if (-1 == setenv("SHELL", argv[0], 1)) {
         perror("setenv SHELL");
     }
@@ -38,10 +36,10 @@ int main(int argc, char *argv[]) {
     sushi_read_config(config, 1);
     prevent_interruption();
     
-    // What is this ????
-    // for(int i = 0; i < argc; i++) {
-    //    sushi_read_config(argv[i], 1);
-    //}
+    // script interpreter
+     for(int i = 1; i < argc; i++) {
+        sushi_read_config(argv[i], 1);
+    }
     
     while (sushi_exit == 0) {
         char *currentPS1Value = sushi_safe_getenv("PS1");

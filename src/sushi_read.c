@@ -55,7 +55,7 @@ char *sushi_read_line(FILE *in) {
 int sushi_read_config(char *fname, int ok_if_missing) {
     FILE *filePointer;
     
-    if (ok_if_missing == 0){ //PART V
+    if (ok_if_missing == 0){
         exit(1);
         
     } else {
@@ -74,8 +74,6 @@ int sushi_read_config(char *fname, int ok_if_missing) {
                         if (sushi_parse_command(line) == 0) {
                             sushi_store(line);
                         }
-                    } else {
-                        perror(fname);
                     }
                 } while ((!feof(filePointer)));
                 
@@ -83,7 +81,7 @@ int sushi_read_config(char *fname, int ok_if_missing) {
                 fclose(filePointer);
                 return 0;
             }
-        } else {
+        } else { // Perror: File does not exist
             perror(fname);
         }
     }

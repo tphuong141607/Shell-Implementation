@@ -68,7 +68,7 @@ void free_memory(prog_t *exe) {
     }
     // Free the array itself
     free(exe->args.args);
-        
+    
     // Free each non-NULL exe->redirection
     if (exe->redirection.in != NULL) {
         free(exe->redirection.in);
@@ -85,7 +85,6 @@ void free_memory(prog_t *exe) {
     free_memory(exe->prev);
 }
 
-// Skeleton
 void sushi_assign(char *name, char *value) {
     /* If name does exist in the environment, then its value
      * is changed to value if overwrite is nonzero;
@@ -158,12 +157,14 @@ static void start(prog_t *exe) {
 // using the "new" descriprot (e.g., an outgoing pipe).  This
 // functions terminates the process of error and should not be used in
 // the parent, only in a child.
+
 static void dup_me (int new, int old) {
   if (new != old && -1 == dup2(new, old)) {
     perror("dup2");
     exit(1);
   }
 }
+
 // Calculate the total size of the linkedList (total processes)
 int linkedListSize(prog_t *head) {
     int count = 0;
@@ -182,6 +183,7 @@ int calculateSum(int arr[], int n) {
         total += arr[i];
     return total;
 }
+
 /*--------------------------------------------------------------------
  * End of "convenience" functions
  *--------------------------------------------------------------------*/
@@ -271,6 +273,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
             currentNode = currentNode->prev;
         }
     }
+    
     // In parent
     free_memory(exe);
     if(bgmode == 0) {
@@ -280,7 +283,6 @@ int sushi_spawn(prog_t *exe, int bgmode) {
     }
     return 0;
 }
-
 
 /*The wrapper functions shall call the corresponding library functions.
  If the library function does not fail, the wrapper will return
