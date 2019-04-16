@@ -212,7 +212,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
     if (totalProcess > 1) {
         int pipe_fd[totalProcess][2]; // # of pipes = # of processes
         prog_t *currentNode = exe;
-        int temp;
+        int temp = -1; // DZ: Don't leave uninitialized
         
         for (int i = 0; i < totalProcess; i++) {
             pipe(pipe_fd[i]);
@@ -247,7 +247,8 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                         start(currentNode);
                         break;
                     }
-                    
+		    // DZ: this statement may fall through
+                    break;
                 default: // in parent process
                     // head process
                     if (currentNode->prev == NULL) {
