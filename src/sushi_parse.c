@@ -184,6 +184,53 @@ int calculateSum(int arr[], int n) {
     return total;
 }
 
+/*
+ * You can use this function instead of yours if you want.
+ */
+int sushi_spawn_dz(prog_t *exe, int bgmode) {
+  int pipe_length = 0, max_pipe = cmd_length(exe);
+  pid_t pid[max_pipe];
+
+  int old_stdout = STDOUT_FILENO;
+  
+  for(prog_t *prog = exe; prog; prog = prog->prev) {
+    int pipefd[2] = {STDIN_FILENO, old_stdout};
+    if (prog->prev && -1 == pipe(pipefd)) {
+      perror("pipe");
+      return 1;
+    }
+  
+    switch(pid[pipe_length] = fork()) {
+    case -1: // Error
+      perror(prog->args.args[0]);
+      return 1;
+    case 0: // Child
+      dup_me(pipefd[0], STDIN_FILENO);
+      dup_me(old_stdout, STDOUT_FILENO);
+      if(pipefd[1] != STDOUT_FILENO)
+	close(pipefd[1]);
+      start(prog);
+      exit(1);
+    default: // Parent
+      if(pipefd[0] != STDIN_FILENO) close(pipefd[0]);
+      if(old_stdout != STDOUT_FILENO) close(old_stdout);
+      old_stdout = pipefd[1];
+    }
+    pipe_length++;
+  }
+
+  int status = 0;
+  if (bgmode == 0) {
+    for (int i = 0; i < pipe_length; i++)
+      if(wait_and_setenv(pid[i]))
+	status = 1;
+  }
+
+  if(old_stdout != STDOUT_FILENO) close(old_stdout);
+  free_memory(exe);
+  
+  return status;
+}
 /*--------------------------------------------------------------------
  * End of "convenience" functions
  *--------------------------------------------------------------------*/
@@ -313,5 +360,11 @@ void *super_realloc(void *ptr, size_t size) {
     return newPointerRealloc;
 }
 
+/*
+ * New skeleton functions
+ */
+void sushi_display_wd() {
+}
 
-
+void sushi_change_wd(char *new_wd) {
+}

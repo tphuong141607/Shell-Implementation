@@ -14,6 +14,8 @@
 char *sushi_read_line(FILE *in);
 int sushi_read_config(char *fname, int ok_if_missing);
 
+void sushi_display_wd();
+void sushi_change_wd(char *new_wd);
 void sushi_store(char *line);
 void sushi_show_history();
 char *sushi_unquote(char * s);

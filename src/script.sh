@@ -1,4 +1,4 @@
 message = "Hello, world!"
 printer = echo
-ls -l | wc 
 $printer $message
+cat < sushi.c | wc -l > lines.txt

@@ -21,7 +21,6 @@ unsupported   [;()*^?~{}`]
 "#".*"\n"?      { /* comment */ }
 
 exit            { return YY_SUSHI_EXIT; }
-jobs            { return YY_SUSHI_JOBS; }
 pwd             { return YY_SUSHI_PWD;  }
 cd              { return YY_SUSHI_CD;   }
 

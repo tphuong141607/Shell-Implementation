@@ -47,9 +47,8 @@ cmdline:
 | redir_exe bg_mode    { sushi_spawn($1, $2); }
 | in_exe pipe bg_mode  { last_exe($2)->prev = $1; sushi_spawn($2, $3);}
 | arg YY_SUSHI_SET arg { sushi_assign($1, $3); }
-| YY_SUSHI_JOBS        { __not_implemented__(); } /* TODO */
-| YY_SUSHI_PWD         { __not_implemented__(); } /* TODO */
-| YY_SUSHI_CD arg      { __not_implemented__(); } /* TODO */
+| YY_SUSHI_PWD         { sushi_display_wd(); } /* TODO */
+| YY_SUSHI_CD arg      { sushi_change_wd($2); } /* TODO */
 | YY_SUSHI_HISTORY     { sushi_show_history(stdout); }
 | YY_SUSHI_EXIT        { sushi_exit = 1; }
 
@@ -59,15 +58,15 @@ pipe:
 
 redir_exe: 
   exe           { $$ = $1; } 
-| exe any_redir { $$ = $1; $$->redirection = $2; __not_implemented__(); }
+| exe any_redir { $$ = $1; $$->redirection = $2; }
 
 in_exe:   
   exe           { $$ = $1; }
-| exe in_redir  { $$ = $1; $$->redirection = $2; __not_implemented__(); }
+| exe in_redir  { $$ = $1; $$->redirection = $2; }
 
 out_exe:   
   exe           { $$ = $1; }
-| exe out_redir { $$ = $1; $$->redirection = $2; __not_implemented__(); } 
+| exe out_redir { $$ = $1; $$->redirection = $2; } 
 
 inout_redir:    
   in_redir out_redir { $$.in = $1.in; $$.out1 = $2.out1; $$.out2 = $2.out2; }
