@@ -56,8 +56,7 @@ int sushi_read_config(char *fname, int ok_if_missing) {
     FILE *filePointer;
     
     if (ok_if_missing == 0){
-        exit(1);
-        
+        return 1;
     } else {
         /* Check if file exists */
         if(access(fname, F_OK) != -1 ) {
@@ -81,8 +80,6 @@ int sushi_read_config(char *fname, int ok_if_missing) {
                 fclose(filePointer);
                 return 0;
             }
-        } else { // Perror: File does not exist
-            perror(fname);
         }
     }
     return 1;

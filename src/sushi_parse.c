@@ -259,7 +259,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
     if (totalProcess > 1) {
         int pipe_fd[totalProcess][2]; // # of pipes = # of processes
         prog_t *currentNode = exe;
-        int temp;
+        int temp = -1;
         
         for (int i = 0; i < totalProcess; i++) {
             pipe(pipe_fd[i]);
@@ -294,7 +294,8 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                         start(currentNode);
                         break;
                     }
-                    
+					break;
+					
                 default: // in parent process
                     // head process
                     if (currentNode->prev == NULL) {
@@ -367,4 +368,5 @@ void sushi_display_wd() {
 }
 
 void sushi_change_wd(char *new_wd) {
+    new_wd;
 }

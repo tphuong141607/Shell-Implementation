@@ -17,8 +17,8 @@ void sushi_store(char *line) {
         }
     
          /* All existing lines are shifted to the next position */
-	// DZ: Changed >= to >
-         for (int i = SUSHI_HISTORY_LENGTH - 1; i >= 0; i--) {
+		
+         for (int i = SUSHI_HISTORY_LENGTH - 1; i > 0; i--) {
              history[i] = history[i-1];
          }
     
