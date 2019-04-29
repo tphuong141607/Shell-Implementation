@@ -3,6 +3,8 @@
 #include <sys/wait.h>
 #include "sushi.h"
 #include "sushi_yyparser.tab.h"
+#include <fcntl.h> // open function
+#include <unistd.h> // close function
 
 char *sushi_unquote(char *s) {
     int sINDX = 0;
@@ -148,7 +150,7 @@ static void start(prog_t *exe) {
   args.args[args.size] = (char*)NULL;
   execvp(args.args[0], args.args);
   perror(args.args[0]);
-    exit(0);
+    exit(1);
 }
 
 // "Rename" fule descriptor "old" to "new," if necessary. After the
@@ -184,9 +186,51 @@ int calculateSum(int arr[], int n) {
     return total;
 }
 
+// Redirection
+static void redirection(prog_t *exe) {
+    if (exe->redirection.in) {
+        int fd0 = open(exe->redirection.in, O_RDONLY);
+        if (fd0 == -1) {
+            perror(exe->redirection.in);
+            close(fd0);
+            exit(1);
+        } else {
+            dup_me(fd0, STDIN_FILENO);
+            close(fd0);
+        }
+    }
+    /* Mode: 0644
+     * (owning) User: read & write, Group: read, Other: read
+     * O_TRUNC: If the file already exists and is a regular file and the open
+     mode allows writing, it will be truncated to length 0
+     */
+    
+    if (exe->redirection.out1) {
+        int fd1 = open(exe->redirection.out1, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd1 == -1) {
+            perror(exe->redirection.out1);
+            close(fd1);
+            exit(1);
+        } else {
+            dup_me(fd1, STDOUT_FILENO);
+            close(fd1);
+        }
+        
+    } else if (exe->redirection.out2) {
+        int fd1 = open(exe->redirection.out2, O_CREAT | O_WRONLY | O_APPEND);
+        if (fd1 == -1) {
+            perror(exe->redirection.out2);
+            close(fd1);
+            exit(1);
+        } else {
+            dup_me(fd1, STDOUT_FILENO);
+            close(fd1);
+        }
+    }
+}
 /*
  * You can use this function instead of yours if you want.
- */
+
 int sushi_spawn_dz(prog_t *exe, int bgmode) {
   int pipe_length = 0, max_pipe = cmd_length(exe);
   pid_t pid[max_pipe];
@@ -231,6 +275,7 @@ int sushi_spawn_dz(prog_t *exe, int bgmode) {
   
   return status;
 }
+ */
 /*--------------------------------------------------------------------
  * End of "convenience" functions
  *--------------------------------------------------------------------*/
@@ -248,6 +293,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                 perror("Fork() failed");
                 return 1;
             case 0:
+                redirection(exe);
                 start(exe);
                 break;
             default:
@@ -273,6 +319,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                 case 0: // in child process
                     // head process
                     if (currentNode->prev == NULL) {
+                        redirection(currentNode);
                         dup_me(temp, STDOUT_FILENO);
                         close(pipe_fd[i][0]);
                         close(pipe_fd[i][1]);
@@ -281,6 +328,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                     }
                     // Tail process
                     else if ((currentNode->prev != NULL) && (calculateSum(allProcessID, totalProcess)) == 0) {
+                        redirection(currentNode);
                         close(pipe_fd[i][1]);
                         dup_me(pipe_fd[i][0], STDIN_FILENO); //send stdin to read end of pipe
                         start(currentNode);
