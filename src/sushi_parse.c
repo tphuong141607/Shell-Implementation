@@ -362,11 +362,34 @@ void *super_realloc(void *ptr, size_t size) {
 }
 
 /*
- * New skeleton functions
+ The function shall display the current working directory to stdout. Use
+ system call getcwd().
  */
 void sushi_display_wd() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    printf("Dir: %s", cwd);
 }
 
+/*
+ The function shall change the current working directory to new_wd, if
+ possible. The function shall print an error messages with perror()
+ otherwise.
+ */
 void sushi_change_wd(char *new_wd) {
-    new_wd;
+    /* Upon successful completion, 0 shall be returned.
+     Otherwise, -1 shall be returned, the cwd shall remain unchanged.
+     */
+    if (chdir(new_wd) != 0) {
+        perror(new_wd);
+    }
+    
 }
+
+
+
+
+
+
+
+

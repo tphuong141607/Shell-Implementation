@@ -54,9 +54,13 @@ char *sushi_read_line(FILE *in) {
 /* Read all lines from the file fname */
 int sushi_read_config(char *fname, int ok_if_missing) {
     FILE *filePointer;
-    
+    /*
+     Add integer parameter ok_if_missing:
+     - if the value of the parameter is not 0, the function shall behave as before;
+     - if the value is 0, the function shall terminate the shell.
+     */
     if (ok_if_missing == 0){
-        return 1;
+        exit(EXIT_FAILURE);
     } else {
         /* Check if file exists */
         if(access(fname, F_OK) != -1 ) {
