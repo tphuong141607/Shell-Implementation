@@ -276,7 +276,7 @@ int sushi_spawn(prog_t *exe, int bgmode) {
                         dup_me(temp, STDOUT_FILENO);
                         close(pipe_fd[i][0]);
                         close(pipe_fd[i][1]);
-                        start(currentNode);
+                        start(currentNode); // execvp
                         break;
                     }
                     // Tail process
@@ -367,8 +367,11 @@ void *super_realloc(void *ptr, size_t size) {
  */
 void sushi_display_wd() {
     char cwd[1024];
-    getcwd(cwd, sizeof(cwd));
-    printf("Dir: %s", cwd);
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Dir: %s\n", cwd);
+    } else {
+        perror("getcwd");
+    }
 }
 
 /*
@@ -380,7 +383,7 @@ void sushi_change_wd(char *new_wd) {
     /* Upon successful completion, 0 shall be returned.
      Otherwise, -1 shall be returned, the cwd shall remain unchanged.
      */
-    if (chdir(new_wd) != 0) {
+    if (chdir(new_wd) == -1) {
         perror(new_wd);
     }
     
