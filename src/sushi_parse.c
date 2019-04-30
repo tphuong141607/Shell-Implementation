@@ -415,7 +415,7 @@ void sushi_display_wd() {
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("Dir: %s\n", cwd);
     } else {
-        perror("getcwd");
+        perror(cwd);
     }
 }
 
@@ -431,6 +431,8 @@ void sushi_change_wd(char *new_wd) {
     if (chdir(new_wd) == -1) {
         perror(new_wd);
     }
+    // free the argument
+    free(new_wd);
     
 }
 
