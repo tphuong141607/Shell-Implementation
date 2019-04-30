@@ -189,7 +189,7 @@ int calculateSum(int arr[], int n) {
 // Redirection
 static void redirection(prog_t *exe) {
     if (exe->redirection.in) {
-        int fd0 = open(exe->redirection.in, O_RDONLY);
+        int fd0 = open(exe->redirection.in, O_RDONLY, S_IRUSR | S_IRGRP | S_IROTH);
         if (fd0 == -1) {
             perror(exe->redirection.in);
             close(fd0);
@@ -198,14 +198,9 @@ static void redirection(prog_t *exe) {
             dup_me(fd0, STDIN_FILENO);
         }
     }
-    /* Mode: 0644
-     * (owning) User: read & write, Group: read, Other: read
-     * O_TRUNC: If the file already exists and is a regular file and the open
-     mode allows writing, it will be truncated to length 0
-     */
     
     if (exe->redirection.out1) {
-        int fd1 = open(exe->redirection.out1, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        int fd1 = open(exe->redirection.out1, O_CREAT | O_WRONLY | O_TRUNC, S_IWUSR);
         if (fd1 == -1) {
             perror(exe->redirection.out1);
             close(fd1);
@@ -215,7 +210,7 @@ static void redirection(prog_t *exe) {
         }
         
     } else if (exe->redirection.out2) {
-        int fd1 = open(exe->redirection.out2, O_CREAT | O_WRONLY | O_APPEND);
+        int fd1 = open(exe->redirection.out2, O_CREAT | O_WRONLY | O_APPEND, S_IWUSR);
         if (fd1 == -1) {
             perror(exe->redirection.out2);
             close(fd1);
