@@ -150,7 +150,7 @@ static void start(prog_t *exe) {
   args.args[args.size] = (char*)NULL;
   execvp(args.args[0], args.args);
   perror(args.args[0]);
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 // "Rename" fule descriptor "old" to "new," if necessary. After the
@@ -163,7 +163,7 @@ static void start(prog_t *exe) {
 static void dup_me (int new, int old) {
   if (new != old && -1 == dup2(new, old)) {
     perror("dup2");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -193,10 +193,9 @@ static void redirection(prog_t *exe) {
         if (fd0 == -1) {
             perror(exe->redirection.in);
             close(fd0);
-            exit(1);
+            exit(EXIT_FAILURE);
         } else {
             dup_me(fd0, STDIN_FILENO);
-            close(fd0);
         }
     }
     /* Mode: 0644
@@ -210,10 +209,9 @@ static void redirection(prog_t *exe) {
         if (fd1 == -1) {
             perror(exe->redirection.out1);
             close(fd1);
-            exit(1);
+            exit(EXIT_FAILURE);
         } else {
             dup_me(fd1, STDOUT_FILENO);
-            close(fd1);
         }
         
     } else if (exe->redirection.out2) {
@@ -221,15 +219,14 @@ static void redirection(prog_t *exe) {
         if (fd1 == -1) {
             perror(exe->redirection.out2);
             close(fd1);
-            exit(1);
+            exit(EXIT_FAILURE);
         } else {
             dup_me(fd1, STDOUT_FILENO);
-            close(fd1);
         }
     }
 }
-/*
- * You can use this function instead of yours if you want.
+
+/* You can use this function instead of yours if you want.
 
 int sushi_spawn_dz(prog_t *exe, int bgmode) {
   int pipe_length = 0, max_pipe = cmd_length(exe);
@@ -274,8 +271,8 @@ int sushi_spawn_dz(prog_t *exe, int bgmode) {
   free_memory(exe);
   
   return status;
-}
- */
+} */
+
 /*--------------------------------------------------------------------
  * End of "convenience" functions
  *--------------------------------------------------------------------*/
