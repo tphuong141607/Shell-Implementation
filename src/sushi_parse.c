@@ -83,7 +83,8 @@ void free_memory(prog_t *exe) {
     }
     // Free exe itself
     free(exe);
-    
+
+    // DZ: Only if exe_prev != NULL!
     free_memory(exe->prev);
 }
 
@@ -200,6 +201,7 @@ static void redirection(prog_t *exe) {
     }
     
     if (exe->redirection.out1) {
+      // DZ: Add S_IRUSR, or else the file is not readable
         int fd1 = open(exe->redirection.out1, O_CREAT | O_WRONLY | O_TRUNC, S_IWUSR);
         if (fd1 == -1) {
             perror(exe->redirection.out1);
@@ -408,6 +410,7 @@ void *super_realloc(void *ptr, size_t size) {
 void sushi_display_wd() {
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
+      // DZ: Just the dir name, no "Dir: " or w/e
         printf("Dir: %s\n", cwd);
     } else {
         perror(cwd);
@@ -430,11 +433,3 @@ void sushi_change_wd(char *new_wd) {
     free(new_wd);
     
 }
-
-
-
-
-
-
-
-
