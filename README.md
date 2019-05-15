@@ -1,8 +1,8 @@
-# yesCODE--sushi
+# yesCODE--Shell Implementation
 
-This implemented SHELL is created in March, 2019.
+This implemented shell is created in March, 2019.
 
-### The sushi SHELL provides some real SHELL's basic functionalities such as:
+### The shell provides some real shell's basic functionalities such as:
 
 #### 1. Validate, store and save commands from the command line/terminal to history. Check the history my typing `!`
 #### 2. The ability to start other programs
